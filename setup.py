@@ -10,13 +10,13 @@ from typing import List
 
 def get_requirements()->List[str]:
     """
-    Thiss function will return list of requirements
+    This function will return list of requirements
     
     """
     requirement_lst:List[str]=[]
     try:
         with open('requirements.txt','r') as file:
-            #Read lines from the file
+            # Read lines from the file
             lines=file.readlines()
             ## Process each line
             for line in lines:
