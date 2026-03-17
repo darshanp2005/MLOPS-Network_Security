@@ -5,7 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from networksecurity.logging.logger import logging
 
-
 class NetworkSecurityException(Exception):
 
     def __init__(self, error_message, error_details: sys):
