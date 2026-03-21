@@ -46,7 +46,7 @@ class DataValidationConfig:
             training_pipeline.DATA_VALIDATION_DRIFT_REPORT_DIR,
             training_pipeline.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME,
         )
-
+        
 
 class DataTransformationConfig:
      def __init__(self,training_pipeline_config:TrainingPipelineConfig):
