@@ -1,4 +1,4 @@
-name: workflow
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths-ignore:
       - 'README.md'
+      - '.gitignore'
 
 permissions:
   id-token: write
@@ -21,14 +22,20 @@ jobs:
 
       - name: Lint code
         run: echo "Linting repository"
+        # Replace with actual linting commands like:
+        # run: flake8 . or npm run lint
 
       - name: Run unit tests
         run: echo "Running unit tests"
+        # Replace with actual test commands like:
+        # run: pytest or npm test
 
   build-and-push-ecr-image:
-    name: Continuous Delivery
+    name: Build and Push to ECR
     needs: integration
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -54,18 +61,25 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
+          # Build with commit hash tag and latest
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          
+          # Push both tags
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   continuous-deployment:
     name: Continuous Deployment
     needs: build-and-push-ecr-image
     runs-on: self-hosted
+    if: success() # Only run if previous jobs succeeded
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -81,21 +95,35 @@ jobs:
 
       - name: Pull latest image
         run: |
-          docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: Stop old container
+      - name: Stop and remove old container
         run: |
           docker stop networksecurity || true
           docker rm networksecurity || true
 
       - name: Run Docker container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
         run: |
-          docker run -d -p 8080:8080 --ipc=host --name=networksecurity \
-          -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          -e AWS_REGION=${{ secrets.AWS_REGION }} \
-          -e MONGODB_URL_KEY=${{ secrets.MONGODB_URL_KEY }} \
-          ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          docker run -d -p 8080:8080 \
+            --ipc=host \
+            --name=networksecurity \
+            --restart unless-stopped \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e MONGODB_URL_KEY=${{ secrets.MONGODB_URL_KEY }} \
+            $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Cleanup
-        run: docker system prune -f
+      - name: Verify container is running
+        run: |
+          sleep 5
+          docker ps | grep networksecurity
+          echo "Container deployment successful!"
+
+      - name: Cleanup old images
+        run: |
+          docker image prune -f
+          docker system prune -f
