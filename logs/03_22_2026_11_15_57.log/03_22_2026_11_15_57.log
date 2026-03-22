@@ -1,2 +1,0 @@
-[ 2026-03-22 11:16:01,234 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
-[ 2026-03-22 11:16:01,238 ] 107 dagshub - INFO - Accessing as darshanintech
