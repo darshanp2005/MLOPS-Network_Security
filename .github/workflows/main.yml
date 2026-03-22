@@ -75,10 +75,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: Get ECR Login Password
         shell: bash
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          echo $(aws ecr get-login-password --region ${{ secrets.AWS_REGION }}) > /tmp/ecr_password.txt
+
+      - name: Docker Login to ECR
+        shell: bash
+        run: |
+          cat /tmp/ecr_password.txt | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          rm /tmp/ecr_password.txt
 
       - name: Pull latest image
         shell: bash
