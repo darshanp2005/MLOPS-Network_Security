@@ -79,13 +79,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Debug (helps verify values)
-      - name: Debug values
-        run: |
-          echo "Registry: ${{ steps.login-ecr.outputs.registry }}"
-          echo "Repository: ${{ secrets.ECR_REPOSITORY_NAME }}"
-
-      #Pull latest image (FIXED)
+      # Pull image (correct way)
       - name: Pull latest image
         run: |
           docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
@@ -96,11 +90,11 @@ jobs:
           docker stop networksecurity || true
           docker rm networksecurity || true
 
-      # Run container (FIXED)
-      - name: Run Docker Image to serve users
-        run: | 
-         docker run -d -p 8080:8080 --ipc=host --name networksecurity -e AWS_ACCESS_KEY_ID=... -e AWS_SECRET_ACCESS_KEY=... -e AWS_REGION=... -e MONGODB_URL_KEY="..." $IMAGE
-      # Cleanup
-      - name: Clean previous images and containers
+      # FINAL FIX (single line, no variables, no bugs)
+      - name: Run Docker container
         run: |
-          docker system prune -f
+          docker run -d -p 8080:8080 --ipc=host --name networksecurity -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e AWS_REGION=${{ secrets.AWS_REGION }} -e MONGODB_URL_KEY="${{ secrets.MONGODB_URL_KEY }}" ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      # Cleanup
+      - name: Cleanup
+        run: docker system prune -f
