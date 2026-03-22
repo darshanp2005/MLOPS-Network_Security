@@ -1,0 +1,13 @@
+[ 2026-03-22 11:16:35,146 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2026-03-22 11:16:35,151 ] 107 dagshub - INFO - Accessing as darshanintech
+[ 2026-03-22 11:16:35,965 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/repos/darshanintech/MLOPS-Network_Security "HTTP/1.1 200 OK"
+[ 2026-03-22 11:16:36,784 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2026-03-22 11:16:36,785 ] 107 dagshub - INFO - Initialized MLflow to track repo "darshanintech/MLOPS-Network_Security"
+[ 2026-03-22 11:16:36,785 ] 107 dagshub - INFO - Repository darshanintech/MLOPS-Network_Security initialized!
+[ 2026-03-22 11:16:37,024 ] 75 uvicorn.error - INFO - Started server process [2696]
+[ 2026-03-22 11:16:37,025 ] 47 uvicorn.error - INFO - Waiting for application startup.
+[ 2026-03-22 11:16:37,026 ] 61 uvicorn.error - INFO - Application startup complete.
+[ 2026-03-22 11:16:58,226 ] 253 uvicorn.error - INFO - Shutting down
+[ 2026-03-22 11:16:58,328 ] 66 uvicorn.error - INFO - Waiting for application shutdown.
+[ 2026-03-22 11:16:58,329 ] 77 uvicorn.error - INFO - Application shutdown complete.
+[ 2026-03-22 11:16:58,330 ] 85 uvicorn.error - INFO - Finished server process [2696]

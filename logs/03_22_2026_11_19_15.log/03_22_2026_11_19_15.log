@@ -1,0 +1,118 @@
+[ 2026-03-22 11:19:18,579 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2026-03-22 11:19:18,583 ] 107 dagshub - INFO - Accessing as darshanintech
+[ 2026-03-22 11:19:19,502 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/repos/darshanintech/MLOPS-Network_Security "HTTP/1.1 200 OK"
+[ 2026-03-22 11:19:21,447 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2026-03-22 11:19:21,450 ] 107 dagshub - INFO - Initialized MLflow to track repo "darshanintech/MLOPS-Network_Security"
+[ 2026-03-22 11:19:21,451 ] 107 dagshub - INFO - Repository darshanintech/MLOPS-Network_Security initialized!
+[ 2026-03-22 11:19:21,603 ] 75 uvicorn.error - INFO - Started server process [5110]
+[ 2026-03-22 11:19:21,603 ] 47 uvicorn.error - INFO - Waiting for application startup.
+[ 2026-03-22 11:19:21,603 ] 61 uvicorn.error - INFO - Application startup complete.
+[ 2026-03-22 11:22:35,714 ] 34 root - INFO - Start data Ingestion
+[ 2026-03-22 11:22:35,893 ] 409 uvicorn.error - ERROR - Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/components/data_ingestion.py", line 60, in split_data_as_train_test
+    train_set, test_set = train_test_split(
+                          ^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sklearn/model_selection/_split.py", line 2919, in train_test_split
+    n_train, n_test = _validate_shuffle_split(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sklearn/model_selection/_split.py", line 2499, in _validate_shuffle_split
+    raise ValueError(
+ValueError: With n_samples=0, test_size=0.2 and train_size=None, the resulting train set will be empty. Adjust any of the aforementioned parameters.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/components/data_ingestion.py", line 91, in initiate_data_ingestion
+    self.split_data_as_train_test(dataframe)
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/components/data_ingestion.py", line 85, in split_data_as_train_test
+    raise NetworkSecurityException(e,sys)
+networksecurity.exception.exception.NetworkSecurityException: Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/components/data_ingestion.py] line number [60] error message [With n_samples=0, test_size=0.2 and train_size=None, the resulting train set will be empty. Adjust any of the aforementioned parameters.]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py", line 36, in start_data_ingestion
+    data_ingestion_artifact=data_ingestion.initiate_data_ingestion()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/components/data_ingestion.py", line 97, in initiate_data_ingestion
+    raise NetworkSecurityException
+TypeError: NetworkSecurityException.__init__() missing 2 required positional arguments: 'error_message' and 'error_details'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py", line 84, in run_pipeline
+    data_ingestion_artifact=self.start_data_ingestion()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py", line 41, in start_data_ingestion
+    raise NetworkSecurityException(e,sys)
+networksecurity.exception.exception.NetworkSecurityException: Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py] line number [36] error message [NetworkSecurityException.__init__() missing 2 required positional arguments: 'error_message' and 'error_details']
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/app.py", line 60, in train_route
+    train_pipeline.run_pipeline()
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py", line 90, in run_pipeline
+    raise NetworkSecurityException(e,sys)
+networksecurity.exception.exception.NetworkSecurityException: Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py] line number [84] error message [Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py] line number [36] error message [NetworkSecurityException.__init__() missing 2 required positional arguments: 'error_message' and 'error_details']]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 404, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 78, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/middleware/cors.py", line 87, in __call__
+    await self.app(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/routing.py", line 670, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/fastapi/routing.py", line 324, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/app.py", line 63, in train_route
+    raise NetworkSecurityException(e,sys)
+networksecurity.exception.exception.NetworkSecurityException: Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/app.py] line number [60] error message [Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py] line number [84] error message [Error occurred in python script name [/Users/darshanprajapati/Desktop/Sem6/MLOPS-Network-Security/networksecurity/pipeline/training_pipeline.py] line number [36] error message [NetworkSecurityException.__init__() missing 2 required positional arguments: 'error_message' and 'error_details']]]
+[ 2026-03-22 11:25:13,323 ] 253 uvicorn.error - INFO - Shutting down
+[ 2026-03-22 11:25:13,426 ] 66 uvicorn.error - INFO - Waiting for application shutdown.
+[ 2026-03-22 11:25:13,430 ] 77 uvicorn.error - INFO - Application shutdown complete.
+[ 2026-03-22 11:25:13,431 ] 85 uvicorn.error - INFO - Finished server process [5110]
