@@ -10,6 +10,7 @@ dagshub
 fastapi
 uvicorn
 
+#python -m pip install requirements.txt
 
 # -e .
 # python -m pip install mlflow
