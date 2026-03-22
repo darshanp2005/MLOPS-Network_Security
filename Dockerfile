@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
-RUN apt-get update -y && apt-get install -y awscli
+RUN pip install --upgrade pip
+
+RUN pip install awscli
 
 RUN pip install -r requirements.txt
 
