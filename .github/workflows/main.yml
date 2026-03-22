@@ -76,32 +76,35 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Manual ECR Login
+        shell: bash
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
-          docker login --username AWS \
-          --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Pull latest image
+        shell: bash
         run: |
           docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Stop old container
+        shell: bash
         run: |
           docker stop networksecurity || true
           docker rm networksecurity || true
 
       - name: Run Docker container
+        shell: bash
         run: |
-          docker run -d -p 8080:8080 --ipc=host --name networksecurity \
+          docker run -d \
+          -p 8080:8080 \
+          --ipc=host \
+          --name networksecurity \
           -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
           -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           -e AWS_REGION=${{ secrets.AWS_REGION }} \
-          -e MONGODB_URL_KEY="${{ secrets.MONGODB_URL_KEY }}" \
+          -e MONGODB_URL_KEY=${{ secrets.MONGODB_URL_KEY }} \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Cleanup
-        run: docker system prune -f
+        shell: bash
+        run: |
+          docker system prune -f
