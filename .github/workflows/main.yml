@@ -79,22 +79,32 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Pull latest images
+      # 🔍 Debug (helps if anything fails)
+      - name: Debug values
+        run: |
+          echo "Registry: ${{ steps.login-ecr.outputs.registry }}"
+          echo "Repository: ${{ secrets.ECR_REPOSITORY_NAME }}"
+
+      - name: Pull latest image
         run: |
           docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-  #     - name: Stop and remove container if running
-  #       run: |
-  #         docker ps -q --filter "name=networksecurity" | grep -q . && docker stop networksecurity && docker rm -fv networksecurity || true
+      # 🧹 Stop old container (important)
+      - name: Stop old container
+        run: |
+          docker ps -q --filter "name=networksecurity" | grep -q . && docker stop networksecurity && docker rm -fv networksecurity || true
 
       - name: Run Docker Image to serve users
         run: |
-          docker run -d -p 8080:8080 --ipc="host" --name=networksecurity \
+          IMAGE=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          echo "Running image: $IMAGE"
+
+          docker run -d -p 8080:8080 --ipc=host --name networksecurity \
           -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
           -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           -e AWS_REGION=${{ secrets.AWS_REGION }} \
           -e MONGODB_URL_KEY="${{ secrets.MONGODB_URL_KEY }}" \
-          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          $IMAGE
 
       - name: Clean previous images and containers
         run: |
