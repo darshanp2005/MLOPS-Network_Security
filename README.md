@@ -13,7 +13,6 @@
 Comprehensive MLOps pipeline designed for real-time network security threat detection. This project leverages machine learning to classify network traffic into 'normal' or 'anomalous/malicious' categories, providing a proactive approach to cybersecurity. By implementing a full end-to-end CI/CD pipeline with GitHub Actions, the system ensures continuous integration, delivery, and deployment on a robust AWS infrastructure.
 
 ### Flow
-![alt text](image.png)### Flow
 
 <p align="center">
   <img src="image.png" alt="alt text" width="100%"/>
