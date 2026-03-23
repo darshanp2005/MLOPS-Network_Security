@@ -1,73 +1,23 @@
 
-# 🛡️ NetworkSentinel: AI-Powered Threat Detection Pipeline
+# MLOPS-Network-Security
 
 ![Python Version](https://img.shields.io/badge/python-3.8-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/darshanp2005/MLOPS-Network_Security/main.yml?branch=main)](https://github.com/darshanp2005/MLOPS-Network_Security/actions)
 [![Code Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)](https://example.com/coverage-report)
 
-## 📜 Table of Contents
+## Project Overview
 
-- [🛡️ NetworkSentinel: AI-Powered Threat Detection Pipeline](#️-networksentinel-ai-powered-threat-detection-pipeline)
-  - [📜 Table of Contents](#-table-of-contents)
-  - [🚀 Project Overview](#-project-overview)
-    - [The Business Problem](#the-business-problem)
-    - [Impact and Use Cases](#impact-and-use-cases)
-    - [Key Features](#key-features)
-  - [🏗️ System Architecture \& Flow Diagram](#️-system-architecture--flow-diagram)
-    - [Workflow Explanation](#workflow-explanation)
-  - [🛠️ Technology Stack](#️-technology-stack)
-  - [✅ Prerequisites](#-prerequisites)
-    - [System Requirements](#system-requirements)
-    - [AWS Account Setup](#aws-account-setup)
-    - [Local Development Tools](#local-development-tools)
-    - [Environment Variables](#environment-variables)
-  - [📂 Project Structure](#-project-structure)
-  - [⚙️ Setup \& Installation](#️-setup--installation)
-    - [Quick Start](#quick-start)
-  - [🐳 Docker Containerization](#-docker-containerization)
-    - [Build the Docker Image](#build-the-docker-image)
-    - [Multi-Stage Build](#multi-stage-build)
-    - [Running the Container Locally](#running-the-container-locally)
-  - [☁️ AWS Deployment Configuration](#️-aws-deployment-configuration)
-    - [ECR Repository Setup](#ecr-repository-setup)
-    - [EC2 Instance Configuration](#ec2-instance-configuration)
-    - [GitHub Actions Self-Hosted Runner Setup](#github-actions-self-hosted-runner-setup)
-    - [AWS CLI Configuration](#aws-cli-configuration)
-  - [🔄 CI/CD Pipeline Details](#-cicd-pipeline-details)
-    - [Continuous Integration (`Integration`)](#continuous-integration-integration)
-    - [Build \& Push (`Build-and-Push-Image-to-ECR`)](#build--push-build-and-push-image-to-ecr)
-    - [Continuous Deployment (`Deploy-to-EC2`)](#continuous-deployment-deploy-to-ec2)
-    - [Secrets Management](#secrets-management)
-  - [🔒 Environment Variables \& Secrets](#-environment-variables--secrets)
-    - [GitHub Secrets](#github-secrets)
-    - [Container Environment Variables](#container-environment-variables)
-  - [🧠 Model Training \& Evaluation](#-model-training--evaluation)
-    - [Dataset](#dataset)
-    - [Feature Engineering](#feature-engineering)
-    - [ML Algorithms](#ml-algorithms)
-    - [Training Scripts](#training-scripts)
-    - [Model Evaluation](#model-evaluation)
-  - [🔌 API Endpoints](#-api-endpoints)
-    - [`POST /predict`](#post-predict)
-  - [📊 Monitoring \& Logging](#-monitoring--logging)
-  - [🧪 Testing](#-testing)
-    - [Unit Tests](#unit-tests)
-    - [Test Coverage](#test-coverage)
-  - [💡 Troubleshooting Guide](#-troubleshooting-guide)
-  - [🛡️ Security Best Practices](#️-security-best-practices)
-  - [⚡ Performance Optimization](#-performance-optimization)
-  - [🔮 Future Enhancements](#-future-enhancements)
-  - [🤝 Contributing Guidelines](#-contributing-guidelines)
-  - [📄 License](#-license)
-  - [🙏 Acknowledgments](#-acknowledgments)
+Comprehensive MLOps pipeline designed for real-time network security threat detection. This project leverages machine learning to classify network traffic into 'normal' or 'anomalous/malicious' categories, providing a proactive approach to cybersecurity. By implementing a full end-to-end CI/CD pipeline with GitHub Actions, the system ensures continuous integration, delivery, and deployment on a robust AWS infrastructure.
 
-## 🚀 Project Overview
+### Flow
+![alt text](image.png)### Flow
 
-NetworkSentinel is a comprehensive MLOps pipeline designed for real-time network security threat detection. This project leverages machine learning to classify network traffic into 'normal' or 'anomalous/malicious' categories, providing a proactive approach to cybersecurity. By implementing a full end-to-end CI/CD pipeline with GitHub Actions, the system ensures continuous integration, delivery, and deployment on a robust AWS infrastructure.
+<p align="center">
+  <img src="image.png" alt="alt text" width="100%"/>
+</p>
 
 ### The Business Problem
 
@@ -88,76 +38,6 @@ In an era of increasing cyber threats, organizations face the challenge of rapid
 - **Centralized Data Storage**: Utilizes MongoDB for storing training data, model artifacts, and prediction logs.
 - **Containerized Application**: Dockerized for portability and consistent deployments.
 
-## 🏗️ System Architecture & Flow Diagram
-
-The architecture is designed for scalability and automation, ensuring a seamless flow from code commit to a production deployment.
-
-```mermaid
-graph TD
-    A[Developer] -- Push Code --> B{GitHub};
-    B -- Triggers --> C[GitHub Actions CI/CD];
-    
-    subgraph "CI - Continuous Integration"
-        C1[Lint & Test];
-    end
-
-    subgraph "CD - Continuous Delivery/Deployment"
-        C2[Build Docker Image];
-        C3[Push to AWS ECR];
-        C4[Deploy to AWS EC2];
-    end
-
-    subgraph "AWS Infrastructure"
-        D[AWS ECR];
-        E[AWS EC2 Instance];
-        F[Self-Hosted Runner];
-        G[MongoDB Atlas/on EC2];
-    end
-
-    subgraph "Model Training Pipeline (Offline)"
-        H[Data Ingestion] --> I[Data Validation];
-        I --> J[Data Transformation];
-        J --> K[Model Training];
-        K --> L[Model Evaluation];
-        L --> M[Model Pusher];
-    end
-
-    C --> C1;
-    C1 -- Success --> C2;
-    C2 --> C3;
-    C3 --> D;
-    C3 -- Success --> C4;
-    C4 -- Pulls Image --> D;
-    C4 -- Runs Container on --> E;
-    E -- Hosts --> F;
-    C -- Uses --> F;
-    E -- Connects to --> G;
-    M -- Stores Model in --> G;
-
-    subgraph "Prediction Service"
-        N[API Endpoint on EC2];
-        O[User/System];
-    end
-
-    O -- Sends Request --> N;
-    N -- Loads Model from --> G;
-    N -- Returns Prediction --> O;
-
-```
-
-### Workflow Explanation
-
-1.  **Code Commit**: A developer pushes new code or changes to the GitHub repository.
-2.  **CI Trigger**: The push event triggers the GitHub Actions CI/CD pipeline.
-3.  **Continuous Integration**: The `CI` job runs, performing linting checks and executing unit tests to ensure code quality.
-4.  **Build Docker Image**: Upon successful integration, the `Build & Push` job starts. It builds a new Docker image based on the `Dockerfile`.
-5.  **Push to ECR**: The newly built Docker image is tagged and pushed to a private Amazon ECR (Elastic Container Registry) repository.
-6.  **Deployment Trigger**: Once the image is successfully pushed to ECR, the `Deploy` job is triggered.
-7.  **Deploy to EC2**: The self-hosted runner on the AWS EC2 instance pulls the latest Docker image from ECR.
-8.  **Run Container**: The runner stops the old container (if any) and starts a new container with the updated image.
-9.  **Prediction Service**: The application is now live, serving prediction requests through its API endpoints.
-10. **Data Storage**: All application data, including model artifacts and logs, are stored and retrieved from a MongoDB database.
-
 ## 🛠️ Technology Stack
 
 | Category                  | Technology                                                              |
@@ -171,7 +51,7 @@ graph TD
 | **Monitoring & Logging**  | `CloudWatch` (via AWS CLI), `Custom Logging`                            |
 | **Testing**               | `pytest`                                                                |
 
-## ✅ Prerequisites
+## Prerequisites
 
 ### System Requirements
 
@@ -201,7 +81,7 @@ You will need to create a `.env` file in the root of the project with the follow
 MONGO_DB_URL="<your_mongodb_url>"
 ```
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 .
@@ -229,7 +109,7 @@ MONGO_DB_URL="<your_mongodb_url>"
 -   **`requirements.txt`**: A list of all Python packages required for the project.
 -   **`setup.py`**: Makes the `networksecurity` directory an installable package.
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### Quick Start
 
@@ -321,7 +201,7 @@ Ensure the AWS CLI is configured on your local machine and on the EC2 instance (
 aws configure
 ```
 
-## 🔄 CI/CD Pipeline Details
+## CI/CD Pipeline Details
 
 The CI/CD pipeline is defined in `.github/workflows/main.yml` and consists of three main jobs.
 
@@ -356,7 +236,7 @@ The CI/CD pipeline is defined in `.github/workflows/main.yml` and consists of th
 
 The pipeline uses GitHub Secrets to securely store AWS credentials and other sensitive information.
 
-## 🔒 Environment Variables & Secrets
+## Environment Variables & Secrets
 
 ### GitHub Secrets
 
@@ -375,7 +255,7 @@ The pipeline uses GitHub Secrets to securely store AWS credentials and other sen
 | `MONGO_DB_URL` | MongoDB connection string. |
 | `PORT`         | Port for the Flask app.   |
 
-## 🧠 Model Training & Evaluation
+## Model Training & Evaluation
 
 ### Dataset
 
@@ -406,7 +286,7 @@ The model is evaluated using the following metrics:
 -   Recall
 -   F1-Score
 
-## 🔌 API Endpoints
+## API Endpoints
 
 The application provides a single endpoint for predictions.
 
@@ -428,13 +308,13 @@ The application provides a single endpoint for predictions.
     }
     ```
 
-## 📊 Monitoring & Logging
+## Monitoring & Logging
 
 -   **Application Logs**: Logs are printed to the container's standard output. You can view them using `docker logs <container_id>`.
 -   **Health Checks**: The application has a `/` endpoint that returns a `200 OK` status for health checks.
 -   **AWS CloudWatch**: For a production setup, logs can be streamed to CloudWatch using the AWS CloudWatch Logs agent.
 
-## 🧪 Testing
+## Testing
 
 ### Unit Tests
 
@@ -452,44 +332,15 @@ Coverage reports can be generated using `pytest-cov`.
 pytest --cov=networksecurity
 ```
 
-## 💡 Troubleshooting Guide
+## Troubleshooting Guide
 
 -   **Docker container exits immediately**: Check the container logs (`docker logs <container_id>`) for errors.
 -   **Port 8080 not accessible**: Ensure the security group on your EC2 instance allows inbound traffic on port 8080.
 -   **MongoDB connection failures**: Verify your `MONGO_DB_URL` and ensure the database is accessible from your application's host.
 
-## 🛡️ Security Best Practices
+## Security Best Practices
 
 -   **IAM Roles**: Use IAM roles with the principle of least privilege.
 -   **Secrets Management**: Store all secrets in GitHub Secrets, not in the code.
 -   **Container Security**: Regularly scan your Docker images for vulnerabilities.
 
-## ⚡ Performance Optimization
-
--   **Docker Image Size**: Use multi-stage builds to keep the final image small.
--   **Model Inference**: For high-throughput, consider using a more optimized model serving solution like TorchServe or TensorFlow Serving.
-
-## 🔮 Future Enhancements
-
--   Implement a more advanced model like XGBoost or a neural network.
--   Add a data drift detection mechanism.
--   Integrate with a monitoring tool like Prometheus and Grafana.
-
-## 🤝 Contributing Guidelines
-
-Contributions are welcome! Please follow these steps:
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature/your-feature`).
-3.  Make your changes.
-4.  Commit your changes (`git commit -m 'Add some feature'`).
-5.  Push to the branch (`git push origin feature/your-feature`).
-6.  Open a pull request.
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
--   Thanks to the open-source community for the amazing tools and libraries used in this project.
--   Inspired by various MLOps projects and best practices.
